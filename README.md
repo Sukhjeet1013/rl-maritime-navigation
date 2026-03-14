@@ -1,28 +1,36 @@
 # Autonomous Maritime Navigation using Reinforcement Learning
 
-This project demonstrates an autonomous ship navigation system trained
-using **Reinforcement Learning (PPO)**.\
-The agent learns to navigate through a dynamic ocean environment while
-avoiding moving obstacles and ocean current disturbances.
+## Simulation Demo
+
+![RL Navigation Demo](demo.gif)
+
+This project implements an **autonomous maritime navigation system using
+Reinforcement Learning (PPO)**. The agent learns to navigate a ship
+through a dynamic ocean environment while avoiding obstacles and
+handling environmental disturbances such as ocean currents.
 
 ------------------------------------------------------------------------
 
 # Project Overview
 
-Autonomous maritime navigation is a challenging problem involving
-dynamic environments, unpredictable disturbances, and collision
-avoidance.
+Autonomous maritime navigation is a complex control problem involving:
+
+-   dynamic environments
+-   obstacle avoidance
+-   stochastic disturbances
+-   goal-directed navigation
 
 In this project, a **custom reinforcement learning environment** was
-built using **Gymnasium**. The agent learns to navigate a ship across a
-grid-based ocean environment while:
+developed using **Gymnasium**, where an RL agent learns navigation
+policies using **Proximal Policy Optimization (PPO)** from
+**Stable-Baselines3**.
 
--   Avoiding moving obstacles
--   Handling ocean current disturbances
--   Navigating toward randomly generated goal locations
+The agent learns to:
 
-The agent is trained using **Proximal Policy Optimization (PPO)**
-implemented with **Stable-Baselines3**.
+-   Navigate toward randomly generated targets
+-   Avoid moving obstacles
+-   Adapt to ocean current disturbances
+-   Reach goals within limited episode steps
 
 ------------------------------------------------------------------------
 
@@ -30,27 +38,35 @@ implemented with **Stable-Baselines3**.
 
 ## Environment Features
 
--   **Grid Size:** 10 × 10 ocean map
--   **Agent:** Autonomous ship
--   **Goal:** Reach a target location
--   **Action Space:** 4 discrete actions
-    -   Move Up\
-    -   Move Down\
-    -   Move Left\
-    -   Move Right
+  Feature              Description
+  -------------------- -------------------------------
+  Grid Size            10 × 10 ocean grid
+  Agent                Autonomous ship
+  Goal                 Reach target location
+  Action Space         4 discrete navigation actions
+  Max Episode Length   180 steps
+  Obstacles            6 moving obstacles
+
+### Available Actions
+
+-   Move Up
+-   Move Down
+-   Move Left
+-   Move Right
+
+------------------------------------------------------------------------
 
 ## Dynamic Challenges
 
-The environment simulates several realistic navigation challenges:
+The environment simulates real-world maritime uncertainties:
 
--   Moving obstacles
--   Random obstacle direction changes
--   Ocean current disturbances
+-   Moving obstacles with random direction changes
+-   Ocean current disturbances affecting ship movement
 -   Randomized goal positions
 -   Time-limited navigation episodes
 
-These conditions create a **stochastic navigation environment**, making
-the task more complex than simple pathfinding.
+These conditions create a **stochastic reinforcement learning problem**,
+making the task significantly more challenging than simple pathfinding.
 
 ------------------------------------------------------------------------
 
@@ -62,26 +78,61 @@ The agent is trained using:
 
 ### Training Configuration
 
--   **Algorithm:** PPO\
--   **Library:** Stable-Baselines3\
--   **Policy Network:** MLP\
--   **Training Steps:** 4,000,000\
--   **Observation Space:** 20 features\
--   **Action Space:** 4 discrete actions
+  Parameter           Value
+  ------------------- --------------------
+  Algorithm           PPO
+  Library             Stable-Baselines3
+  Policy Network      MLP
+  Training Steps      4,000,000
+  Observation Space   20 features
+  Action Space        4 discrete actions
 
 ------------------------------------------------------------------------
 
 # State Representation
 
-The agent receives a **20-dimensional observation vector** including:
+The agent receives a **20-dimensional observation vector** containing:
 
 -   Ship position
 -   Goal position
 -   Relative distance to the goal
 -   Obstacle positions
 
-All observations are **normalized between -1 and 1** to improve training
-stability.
+All observations are **normalized between -1 and 1** to stabilize
+learning.
+
+------------------------------------------------------------------------
+
+# Reward Function
+
+The reinforcement learning agent is trained using a shaped reward
+function designed to encourage efficient navigation while avoiding
+obstacles.
+
+  Event                                     Reward
+  ----------------------------------------- -------------------------------
+  Step penalty                              -0.04
+  Moving closer to goal                     +(distance improvement × 2.2)
+  Moving away from goal                     negative distance reward
+  Sailing close to obstacle (\<1.5 cells)   -0.4
+  Collision with obstacle                   **-45**
+  Reaching goal                             **+150**
+  Episode timeout                           -8
+
+### Reward Design Strategy
+
+The reward function combines several learning signals:
+
+-   **Distance-based reward shaping** encourages progress toward the
+    goal
+-   **Step penalty** discourages wandering behavior
+-   **Obstacle proximity penalties** encourage safe navigation
+-   **Large terminal rewards** reinforce successful navigation
+-   **Severe collision penalties** discourage unsafe policies
+
+This reward design helps the PPO agent learn stable navigation
+strategies in a dynamic environment with moving obstacles and ocean
+currents.
 
 ------------------------------------------------------------------------
 
@@ -97,31 +148,31 @@ python -m training.train_agent
 
 ### Training Time
 
-\~20--30 minutes on CPU.
+Approximately **20--30 minutes on CPU**.
 
 ------------------------------------------------------------------------
 
-# Visualization
+# Evaluation Results
 
-The trained agent can be visualized using **Pygame**, showing:
+The trained agent was evaluated across **50 simulation episodes**.
 
--   Ship navigation
--   Moving obstacles
--   Ocean current direction
+  Metric              Value
+  ------------------- ---------
+  Episodes Tested     50
+  Goal Success Rate   **72%**
+  Crash Rate          **28%**
 
-Run the simulation:
-
-``` bash
-python render/run_simulation.py
-```
+These results show the agent successfully learns navigation strategies
+in a stochastic environment with dynamic obstacles and environmental
+disturbances.
 
 ------------------------------------------------------------------------
 
 # Performance Analysis
 
-Training performance and evaluation results:
+Training and evaluation results are visualized below.
 
-![Training Results](image-1.png)
+![Training Curve](image-1.png)
 
 ![Goal Success Rate](image-2.png)
 
@@ -129,25 +180,17 @@ Training performance and evaluation results:
 
 ------------------------------------------------------------------------
 
-# Installation
+# Visualization
 
-Install the required dependencies:
+The trained policy can be visualized using **Pygame**.
 
-``` bash
-pip install -r requirements.txt
-```
+The simulation shows:
 
-------------------------------------------------------------------------
+-   ship navigation behavior
+-   obstacle movement
+-   ocean current disturbances
 
-# Running the Project
-
-### Train the RL Agent
-
-``` bash
-python -m training.train_agent
-```
-
-### Run the Simulation
+### Run Simulation
 
 ``` bash
 python render/run_simulation.py
@@ -155,14 +198,24 @@ python render/run_simulation.py
 
 ------------------------------------------------------------------------
 
+# Installation
+
+Install project dependencies:
+
+``` bash
+pip install -r requirements.txt
+```
+
+------------------------------------------------------------------------
+
 # Technologies Used
 
 -   **Python**
--   **Gymnasium** -- Reinforcement learning environment framework
--   **Stable-Baselines3** -- Reinforcement learning algorithms
--   **NumPy** -- Numerical computation
--   **Pygame** -- Simulation visualization
--   **Matplotlib** -- Training and performance visualization
+-   **Gymnasium** -- custom RL environment
+-   **Stable-Baselines3** -- reinforcement learning algorithms
+-   **NumPy** -- numerical computations
+-   **Pygame** -- simulation visualization
+-   **Matplotlib** -- training metrics visualization
 
 ------------------------------------------------------------------------
 
@@ -171,25 +224,27 @@ python render/run_simulation.py
 This project demonstrates:
 
 -   Designing **custom reinforcement learning environments**
--   Training **PPO agents in stochastic navigation environments**
--   Implementing **reward shaping strategies for navigation tasks**
--   Visualizing **reinforcement learning policies in a simulated
-    environment**
+-   Training **PPO agents in stochastic environments**
+-   Implementing **reward shaping for navigation tasks**
+-   Visualizing reinforcement learning behavior in simulation
+-   Evaluating RL agent performance using simulation metrics
 
 ------------------------------------------------------------------------
 
 # Future Improvements
 
-Potential extensions include:
+Possible future extensions include:
 
 -   Continuous control navigation
 -   Sensor-based obstacle detection
 -   Multi-agent maritime traffic simulation
--   Deep reinforcement learning with **CNN-based observations**
+-   Deep reinforcement learning with CNN-based observations
+-   Realistic maritime navigation physics
 
 ------------------------------------------------------------------------
 
 # Author
 
-**Sukhjeet Singh**\
+**Sukhjeet Singh**
+
 AI / Machine Learning Enthusiast
