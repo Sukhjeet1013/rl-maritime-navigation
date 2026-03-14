@@ -99,7 +99,7 @@ The trained agent is visualized using Pygame, showing:
 
 Example:
 
-![alt text](image.png)
+
 
 #Performance Analysis :
 
@@ -109,44 +109,59 @@ Example:
 
 
 
-#Installation
+## Installation
 
-Install dependencies:
+Install the required dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
-Run Training:
+Running the Project
+Train the RL Agent
 python -m training.train_agent
-
-Run Simulation:
+Run the Simulation
 python render/run_simulation.py
 
+This launches the visualization where the trained agent navigates the maritime environment.
 
 Technologies Used
 
 Python
-Gymnasium
-Stable-Baselines3
-NumPy
-Pygame
-Matplotlib
 
-#Key Learning Outcomes
+Gymnasium – Reinforcement learning environment framework
+
+Stable-Baselines3 – Reinforcement learning algorithms
+
+NumPy – Numerical computations
+
+Pygame – Simulation rendering and visualization
+
+Matplotlib – Training and performance visualization
+
+Key Learning Outcomes
 
 This project demonstrates:
 
-• Designing custom reinforcement learning environments
-• Training PPO agents in stochastic environments
-• Reward shaping for navigation tasks
-• Visualizing RL policies in simulation
+Designing custom reinforcement learning environments
+
+Training PPO agents in stochastic navigation environments
+
+Implementing reward shaping strategies for navigation tasks
+
+Visualizing RL policies in a simulated maritime environment
 
 Future Improvements
 
-Potential extensions:
+Potential extensions include:
 
-• Continuous control navigation
-• Sensor-based obstacle detection
-• Multi-agent maritime traffic simulation
-• Deep reinforcement learning with CNN observations
+Continuous control navigation
+
+Sensor-based obstacle detection
+
+Multi-agent maritime traffic simulation
+
+Deep reinforcement learning using CNN-based observations
 
 Author
 
