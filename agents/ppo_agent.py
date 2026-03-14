@@ -1,0 +1,16 @@
+from stable_baselines3 import PPO
+
+
+def create_agent(env):
+
+    model = PPO(
+        "MlpPolicy",
+        env,
+        verbose=1,
+        learning_rate=0.0003,
+        n_steps=2048,
+        batch_size=64,
+        gamma=0.99
+    )
+
+    return model
