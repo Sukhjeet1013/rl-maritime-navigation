@@ -82,7 +82,7 @@ Training is performed using a custom Gymnasium environment.
 
 Example training command:
 
-```bash
+
 python -m training.train_agent
 
 Training time:
